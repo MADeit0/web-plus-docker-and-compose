@@ -22,8 +22,9 @@ services:
     image: postgres
     restart: always
     environment:
-      PPGDATA: /data/postgres
-    env_file: ./backend/.env
+      PGDATA: /data/postgres
+    env_file: 
+      - backend/.env
     volumes:
       - ./pg-data:/data/postgres
     networks:
