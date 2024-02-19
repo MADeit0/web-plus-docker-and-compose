@@ -10,7 +10,6 @@ import {
   DocumentBuilder,
   SwaggerDocumentOptions,
 } from '@nestjs/swagger';
-import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   initializeTransactionalContext();
@@ -18,8 +17,6 @@ async function bootstrap() {
     cors: true,
     abortOnError: true,
   });
-  const configService = app.get(ConfigService);
-  const port = configService.get('SERVER_PORT') || 3001;
 
   const config = new DocumentBuilder()
     .addBearerAuth()
@@ -35,10 +32,10 @@ async function bootstrap() {
   SwaggerModule.setup('/api/docs', app, document);
 
   app.use(helmet());
-  app.enableCors({ origin: configService.get('CLIENT_CORS') || '' });
+  app.enableCors({ origin: 'https://domainname.oleg.nomoredomainswork.ru' });
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
-  await app.listen(port);
+  await app.listen(3001);
 }
 bootstrap();

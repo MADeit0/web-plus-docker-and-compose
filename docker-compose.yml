@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+  backend:
+    container_name: backend
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    image: compose-backend
+    env_file: ./backend/.env
+    restart: always
+    ports:
+      - '4000:3001'
+    networks:
+      - backend-db
+      - network-front-back
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: postgres
+    image: postgres
+    restart: always
+    environment:
+      PPGDATA: /data/postgres
+    env_file: ./backend/.env
+    volumes:
+      - ./pg-data:/data/postgres
+    networks:
+      - backend-db
+
+  frontend:
+    container_name: frontend
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    image: compose-frontend
+    ports:
+      - '8081:80'
+    networks:
+      - network-front-back
+
+networks:
+  backend-db: 
+    driver: bridge
+    internal: true
+  network-front-back:
+    driver: bridge
+
+volumes:
+  pg-data:
+    driver: local
